@@ -1,10 +1,14 @@
 import React from "react";
 import { Tonal, Interval } from "@tonaljs/modules";
 import Fret from "./Fret";
+import FretNote from "./FretNote";
+import { NoteDisplay, NoteFilter } from "./App";
 
 interface FretboardProps {
   tuning: Tonal.Note[];
   fretLength: number;
+  noteDisplay: NoteDisplay;
+  noteFilters: NoteFilter[];
 }
 
 function calcInlay(fretNumber: number): number {
@@ -37,49 +41,61 @@ export default function Fretboard(props: FretboardProps) {
   const fretsRange = Array.from(Array(props.fretLength));
 
   return (
-    <div style={{ display: "flex" }}>
-      {fretsRange.map((f, i) => {
-        return (
-          <Fret
-            key={i}
-            width={i === 0 ? 48 : 128 - Math.log2(i + 1) * 17.817}
-            inlayCount={calcInlay(i)}
-          >
-            <div style={{ textAlign: "center" }}>
-              {verticalSlice(stringNotes, i).map(n => (
+    <div
+      style={{
+        maxWidth: "100%",
+        overflowX: "scroll",
+        WebkitOverflowScrolling: "touch",
+        padding: 8,
+        userSelect: "none",
+        WebkitUserSelect: "none"
+      }}
+    >
+      <div
+        style={{
+          display: "flex"
+        }}
+      >
+        {fretsRange.map((f, i) => {
+          return (
+            <Fret
+              key={i}
+              width={i === 0 ? 48 : 128 - Math.log2(i) * 17.817}
+              inlayCount={calcInlay(i)}
+            >
+              <div
+                style={{
+                  textAlign: "center",
+                  display: "flex",
+                  flexDirection: "column"
+                }}
+              >
+                {verticalSlice(stringNotes, i).map(n => (
+                  <FretNote
+                    display={props.noteDisplay}
+                    note={n}
+                    filtered={
+                      props.noteFilters.length
+                        ? props.noteFilters.some(filter => filter.fn(n))
+                        : false
+                    }
+                  />
+                ))}
                 <div
                   style={{
-                    marginTop: 16,
-                    marginBottom: 16,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center"
+                    backgroundColor: "#fff",
+                    fontSize: 12,
+                    padding: 8,
+                    color: "#999"
                   }}
                 >
-                  <div
-                    style={{
-                      border: "1px #ccc solid",
-                      borderRadius: 32,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 32,
-                      height: 32
-                    }}
-                  >
-                    {n.pc}
-                  </div>
+                  {i}
                 </div>
-              ))}
-              <div
-                style={{ backgroundColor: "#fff", fontSize: 12, color: "#999" }}
-              >
-                {i}
               </div>
-            </div>
-          </Fret>
-        );
-      })}
+            </Fret>
+          );
+        })}
+      </div>
     </div>
   );
 }

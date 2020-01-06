@@ -1,0 +1,32 @@
+.fret-note-container {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  position: relative;
+}
+
+.fret-note-circle {
+  border: 1px #ccc solid;
+  border-radius: 15%;
+  min-width: 24px;
+  background-color: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.fret-note-filtered:hover {
+  background-color: rgb(7, 64, 187);
+}
+
+.fret-note-filtered {
+  border-color: rgba(0, 0, 0, 0);
+  background-color: rgb(67, 114, 214);
+  color: #fff;
+}
