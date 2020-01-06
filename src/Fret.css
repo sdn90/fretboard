@@ -3,12 +3,13 @@
   background-color: rgb(235, 232, 226, 0.2);
   margin: 2px;
   flex-shrink: 0;
+  min-width: 64px;
 }
 
 .fret-inlay-container {
   position: absolute;
   top: 0;
-  bottom: 0;
+  bottom: 31px; /* height of the fret number div below the fret */
   left: 0;
   right: 0;
   display: flex;

@@ -81,16 +81,18 @@ export default function Fretboard(props: FretboardProps) {
                     }
                   />
                 ))}
-                <div
-                  style={{
-                    backgroundColor: "#fff",
-                    fontSize: 12,
-                    padding: 8,
-                    color: "#999"
-                  }}
-                >
-                  {i}
-                </div>
+              </div>
+
+              <div
+                style={{
+                  backgroundColor: "#fff",
+                  fontSize: 12,
+                  padding: 8,
+                  textAlign: "center",
+                  color: "#999"
+                }}
+              >
+                {i}
               </div>
             </Fret>
           );

@@ -13,8 +13,16 @@ export default function Fret(props: FretProps) {
     <div className="fret-container" style={{ width: props.width }}>
       <div className="fret-inlay-container">
         {inlayRange.map(() => (
-          <svg viewBox="0 0 100 100" width="16" style={{ opacity: 0.5 }}>
-            <circle fill="#fff" cx={50} cy={50} r={50}></circle>
+          <svg viewBox="0 0 100 100" width="20" style={{ opacity: 1 }}>
+            <circle
+              fill="#fff"
+              cx={50}
+              cy={50}
+              r={45}
+              stroke="#aaa"
+              strokeOpacity={0.2}
+              strokeWidth={8}
+            ></circle>
           </svg>
         ))}
       </div>

@@ -10,8 +10,8 @@
 
 .fret-note-circle {
   border: 1px #ccc solid;
-  border-radius: 15%;
-  min-width: 24px;
+  border-radius: 4px;
+  width: 32px;
   background-color: #ccc;
   display: flex;
   align-items: center;
@@ -19,14 +19,18 @@
   font-weight: 600;
   cursor: pointer;
   padding: 2px;
+  transition: background-color 200ms ease-in-out;
 }
-
-.fret-note-filtered:hover {
-  background-color: rgb(7, 64, 187);
+.fret-note-circle:hover {
+  background-color: #666;
 }
 
 .fret-note-filtered {
   border-color: rgba(0, 0, 0, 0);
   background-color: rgb(67, 114, 214);
   color: #fff;
+}
+
+.fret-note-filtered:hover {
+  background-color: rgb(7, 64, 187);
 }
