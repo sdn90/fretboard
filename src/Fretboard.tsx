@@ -2,13 +2,13 @@ import React from "react";
 import { Tonal, Interval } from "@tonaljs/modules";
 import Fret from "./Fret";
 import FretNote from "./FretNote";
-import { NoteDisplay, NoteFilter } from "./App";
+import { NoteDisplay, Scale } from "./App";
 
 interface FretboardProps {
   tuning: Tonal.Note[];
   fretLength: number;
   noteDisplay: NoteDisplay;
-  noteFilters: NoteFilter[];
+  selectedScale: Scale;
 }
 
 function calcInlay(fretNumber: number): number {
@@ -26,7 +26,7 @@ export default function Fretboard(props: FretboardProps) {
   const stringNotes: Tonal.Note[][] = props.tuning
     .map(openStringNote => {
       const notes = [];
-      for (let i = 1; i < props.fretLength; i++) {
+      for (let i = 1; i < props.fretLength + 1; i++) {
         notes.push(
           Tonal.note(
             Tonal.transpose(openStringNote.name, Interval.fromSemitones(i))
@@ -38,7 +38,7 @@ export default function Fretboard(props: FretboardProps) {
     .slice()
     .reverse();
 
-  const fretsRange = Array.from(Array(props.fretLength));
+  const fretsRange = Array.from(Array(props.fretLength + 1));
 
   return (
     <div
@@ -70,17 +70,30 @@ export default function Fretboard(props: FretboardProps) {
                   flexDirection: "column"
                 }}
               >
-                {verticalSlice(stringNotes, i).map(n => (
-                  <FretNote
-                    display={props.noteDisplay}
-                    note={n}
-                    filtered={
-                      props.noteFilters.length
-                        ? props.noteFilters.some(filter => filter.fn(n))
-                        : false
-                    }
-                  />
-                ))}
+                {verticalSlice(stringNotes, i).map(n => {
+                  let bgColor = "#ccc";
+                  let color = "#fff";
+                  const scaleDegreeIndex = props.selectedScale.notes.indexOf(
+                    n.name
+                  );
+                  if (scaleDegreeIndex > -1 && scaleDegreeIndex < 7) {
+                    bgColor = rgba([
+                      120 - scaleDegreeIndex * 10,
+                      116 + scaleDegreeIndex * 10,
+                      255 - scaleDegreeIndex * 10,
+                      1 - scaleDegreeIndex * 0.1
+                    ]);
+                  }
+                  return (
+                    <FretNote
+                      display={props.noteDisplay}
+                      note={n}
+                      romanNumeral={noteIndexToRoman(scaleDegreeIndex)}
+                      backgroundColor={bgColor}
+                      color={color}
+                    />
+                  );
+                })}
               </div>
 
               <div
@@ -103,4 +116,12 @@ export default function Fretboard(props: FretboardProps) {
 }
 function verticalSlice<T>(arr: T[][], i: number): T[] {
   return arr.map(arr2d => arr2d[i]);
+}
+
+function noteIndexToRoman(index: number) {
+  return ["I", "II", "III", "IV", "V", "VI", "VII"][index];
+}
+
+function rgba(x: [number, number, number, number]): string {
+  return `rgba(${x.join(",")})`;
 }

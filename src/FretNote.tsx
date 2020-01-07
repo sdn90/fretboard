@@ -6,7 +6,9 @@ import { NoteDisplay } from "./App";
 interface FretNoteProps {
   note: Tonal.Note;
   display: NoteDisplay;
-  filtered: boolean;
+  color: string;
+  backgroundColor: string;
+  romanNumeral?: string;
 }
 
 export default function FretNote(props: FretNoteProps) {
@@ -15,6 +17,9 @@ export default function FretNote(props: FretNoteProps) {
     case NoteDisplay.PitchClass:
       display = props.note.pc;
       break;
+    case NoteDisplay.ScaleDegree:
+      display = props.romanNumeral ? props.romanNumeral : props.note.name;
+      break;
     default:
       display = props.note.name;
       break;
@@ -22,12 +27,10 @@ export default function FretNote(props: FretNoteProps) {
   return (
     <div className="fret-note-container">
       <div
-        className={`fret-note-circle${
-          props.filtered ? " fret-note-filtered" : ""
-        }`}
-        style={{ opacity: props.filtered ? 1 : 0.2 }}
+        className="fret-note-circle"
+        style={{ color: props.color, backgroundColor: props.backgroundColor }}
       >
-        {display}
+        <div>{display}</div>
       </div>
     </div>
   );

@@ -1,28 +1,23 @@
 import React, { useState } from "react";
 import "./App.css";
 import Fretboard from "./Fretboard";
-import { Tonal, Scale } from "@tonaljs/modules";
+import { Tonal, Scale, ScaleDictionary } from "@tonaljs/modules";
 import FretboardDisplaySettingsForm, {
   FretboardDisplaySettings,
   TUNING_PRESETS
 } from "./FretboardDisplaySettings";
 import NoteFilterForm from "./NoteFilterForm";
 
-enum VisualState {
-  Hidden,
-  Dimmed
-}
-
-export interface NoteFilter {
-  name: string;
-  fn: (note: Tonal.Note) => boolean;
-}
-
 export enum NoteDisplay {
   PitchClass = "Pitch Class",
-  PitchNotation = "Pitch Notation"
+  PitchNotation = "Pitch Notation",
+  ScaleDegree = "Scale Degree"
 }
-
+export interface Scale extends ScaleDictionary.ScaleType {
+  tonic: string | null;
+  type: string;
+  notes: Tonal.NoteName[];
+}
 const App: React.FC = () => {
   const [fretboardDisplaySettings, setFretboardDisplaySettings] = useState<
     FretboardDisplaySettings
@@ -32,19 +27,8 @@ const App: React.FC = () => {
     tuning: TUNING_PRESETS.EADG
   });
 
-  const [noteFilters, setNoteFilters] = useState<NoteFilter[]>([
-    {
-      name: "C3 Major",
-      fn: note => Scale.scale("C3 major").notes.includes(note.name)
-    }
-  ]);
-  function removeNoteFilter(index: number) {
-    setNoteFilters(noteFilters.filter((nf, i) => i !== index));
-  }
-
-  function addNoteFilter(noteFilter: NoteFilter) {
-    setNoteFilters(noteFilters.concat(noteFilter));
-  }
+  const c3major = Scale.scale("C3 major");
+  const [selectedScale, setSelectedScale] = useState<Scale>(c3major);
 
   return (
     <div className="App">
@@ -67,25 +51,14 @@ const App: React.FC = () => {
         tuning={fretboardDisplaySettings.tuning}
         fretLength={fretboardDisplaySettings.fretCount}
         noteDisplay={fretboardDisplaySettings.noteDisplay}
-        noteFilters={noteFilters}
+        selectedScale={selectedScale}
       />
 
       <div style={{ marginTop: 16, padding: 8 }}>
-        <div>Active filters</div>
-        <div style={{ marginBottom: 16 }}>
-          {noteFilters.map((nf, index) => {
-            return (
-              <div>
-                {nf.name}{" "}
-                <button onClick={() => removeNoteFilter(index)}>X</button>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      <div style={{ marginTop: 16, padding: 8 }}>
-        <NoteFilterForm addFilter={nf => noteFilters.concat(nf)} />
+        <NoteFilterForm
+          initialValue={{ tonic: "C", name: "major", octave: "3" }}
+          onChange={setSelectedScale}
+        />
       </div>
     </div>
   );

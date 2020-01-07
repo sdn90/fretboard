@@ -1,24 +1,34 @@
-import React, { useState, SyntheticEvent } from "react";
-import { Tonal, Scale } from "@tonaljs/modules";
-import { NoteFilter } from "./App";
+import React, { useState, SyntheticEvent, useEffect } from "react";
+import { Scale } from "@tonaljs/modules";
+import { Scale as IScale } from "./App";
 
 interface NoteFilterFormProps {
-  addFilter: (NoteFilter: NoteFilter) => void;
+  initialValue: {
+    tonic: string;
+    octave: string;
+    name: string;
+  };
+  onChange: (scale: IScale) => void;
 }
 
 export default function NoteFilterForm(props: NoteFilterFormProps) {
-  const [scaleInputValue, setScaleInputValue] = useState("");
-  const [isError, setIsError] = useState(false);
+  const [selectedTonic, setSelectedTonic] = useState(props.initialValue.tonic);
+  const [selectedOctave, setSelectedOctave] = useState(
+    props.initialValue.octave
+  );
+  const [selectedScaleName, setSelectedScaleName] = useState(
+    props.initialValue.name
+  );
 
-  function handleSubmit(e: SyntheticEvent) {
-    e.preventDefault();
-    const s = Scale.scale(scaleInputValue);
-    console.log(s);
-  }
+  useEffect(() => {
+    const s = Scale.scale(
+      `${selectedTonic}${selectedOctave} ${selectedScaleName}`
+    );
+    props.onChange(s);
+  }, [selectedTonic, selectedOctave, selectedScaleName, props.onChange]);
 
   return (
     <div>
-      <h3>Scale</h3>
       <div style={{ display: "flex" }}>
         <div>
           <h3>Tonic</h3>
@@ -36,16 +46,21 @@ export default function NoteFilterForm(props: NoteFilterFormProps) {
             "Gb",
             "G"
           ].map(tonic => (
-            <div
+            <button
               style={{
                 display: "inline-block",
                 marginRight: 16,
                 fontSize: 32,
-                fontWeight: 700
+                fontWeight: 700,
+                background: "none",
+                border: 0,
+                cursor: "pointer",
+                color: tonic === selectedTonic ? "rgb(120, 116, 255)" : "#222"
               }}
+              onClick={() => setSelectedTonic(tonic)}
             >
               {tonic}
-            </div>
+            </button>
           ))}
         </div>
 
