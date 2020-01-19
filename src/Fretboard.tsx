@@ -2,7 +2,8 @@ import React from "react";
 import { Tonal, Interval } from "@tonaljs/modules";
 import Fret from "./Fret";
 import FretNote from "./FretNote";
-import { NoteDisplay, Scale } from "./App";
+import { NoteDisplay } from "./App";
+import { Scale, noteIndexToRoman } from "./Scale";
 
 interface FretboardProps {
   tuning: Tonal.Note[];
@@ -73,16 +74,11 @@ export default function Fretboard(props: FretboardProps) {
                 {verticalSlice(stringNotes, i).map(n => {
                   let bgColor = "#ccc";
                   let color = "#fff";
-                  const scaleDegreeIndex = props.selectedScale.notes.indexOf(
-                    n.name
-                  );
+                  const scaleDegreeIndex = props.selectedScale.notes
+                    .map(scaleNote => Tonal.note(scaleNote)?.chroma as number)
+                    .indexOf(n.chroma);
                   if (scaleDegreeIndex > -1 && scaleDegreeIndex < 7) {
-                    bgColor = rgba([
-                      120 - scaleDegreeIndex * 10,
-                      116 + scaleDegreeIndex * 10,
-                      255 - scaleDegreeIndex * 10,
-                      1 - scaleDegreeIndex * 0.1
-                    ]);
+                    bgColor = hsla([220, 0.8, 0.55, 1]);
                   }
                   return (
                     <FretNote
@@ -118,10 +114,10 @@ function verticalSlice<T>(arr: T[][], i: number): T[] {
   return arr.map(arr2d => arr2d[i]);
 }
 
-function noteIndexToRoman(index: number) {
-  return ["I", "II", "III", "IV", "V", "VI", "VII"][index];
-}
-
 function rgba(x: [number, number, number, number]): string {
   return `rgba(${x.join(",")})`;
+}
+
+function hsla(x: [number, number, number, number]): string {
+  return `hsla(${x[0]}, ${x[1] * 100}%, ${x[2] * 100}%, ${x[3]})`;
 }
